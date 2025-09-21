@@ -1,0 +1,35 @@
+{
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "build": "vite build",
+        "dev": "vite",
+        "lint": "prettier --check .",
+        "lint:fix": "prettier --write .",
+        "test:lint": "prettier --check .",
+        "postinstall": "composer fix"
+    },
+    "devDependencies": {
+        "@tailwindcss/forms": "^0.5.10",
+        "@tailwindcss/vite": "^4.1.8",
+        "autoprefixer": "^10.4.2",
+        "axios": "^1.9.0",
+        "concurrently": "^9.0.1",
+        "laravel-vite-plugin": "^1.3.0",
+        "open": "^10.1.2",
+        "prettier": "^3.4.2",
+        "prettier-plugin-blade": "^2.1.19",
+        "prettier-plugin-tailwindcss": "^0.6.12",
+        "tailwindcss": "^4.1.8",
+        "vite": "^6.3.5"
+    },
+    "overrides": {
+        "laravel-vite-plugin": {
+            "vite": "^6.0"
+        }
+    },
+    "dependencies": {
+        "@preline/theme-switch": "^3.2.3",
+        "preline": "^3.2.3"
+    }
+}
