@@ -8,12 +8,7 @@
                 class="inline-flex items-center justify-center rounded-md p-2 text-gray-400 transition-colors duration-200 hover:bg-gray-100 hover:text-gray-500 focus:ring-2 focus:ring-blue-500 focus:outline-none focus:ring-inset lg:hidden dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-gray-200"
             >
                 <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M4 6h16M4 12h8m-8 6h16"
-                    />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h8m-8 6h16" />
                 </svg>
             </button>
 
@@ -27,11 +22,7 @@
 
                 <!-- Dark mode logo -->
                 <a href="#" wire:navigate class="hidden items-center space-x-2 max-lg:!hidden dark:flex">
-                    <img
-                        class="h-8 w-auto"
-                        src="https://fluxui.dev/img/demo/dark-mode-logo.png"
-                        alt="Acme Inc."
-                    />
+                    <img class="h-8 w-auto" src="https://fluxui.dev/img/demo/dark-mode-logo.png" alt="Acme Inc." />
                     <span class="text-xl font-semibold text-white">Acme Inc.</span>
                 </a>
             </div>

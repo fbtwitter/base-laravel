@@ -27,19 +27,20 @@
 
 <div class="flex flex-col gap-2 {{ $class }}">
     <div class="flex items-center justify-between">
-        <x-atoms.typographies.label for="{{ $id }}">{{ $label }}</x-atoms.typographies.label>
+        <x-base.typographies.label for="{{ $id }}" class="font-medium leading-6">{{ $label }}
+        </x-base.typographies.label>
 
         @if($forgot)
-            <x-atoms.typographies.link
+            <x-base.typographies.link
                 href="{{ route('password.request') }}"
                 class="text-sm"
                 wire:navigate>
                 Forgot password?
-            </x-atoms.typographies.link>
+            </x-base.typographies.link>
         @endif
     </div>
 
-    <x-atoms.forms.input
+    <x-base.forms.input
         :id="$id"
         :type="$type"
         :name="$name"
@@ -48,6 +49,6 @@
         :required="$required" />
 
     @error($errorKey)
-    <x-atoms.typographies.text class="text-red-600 text-sm">{{ $message }}</x-atoms.typographies.text>
+    <x-base.typographies.text class="text-red-600 text-sm">{{ $message }}</x-base.typographies.text>
     @enderror
 </div>
