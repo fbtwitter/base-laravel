@@ -1,6 +1,6 @@
 @props([
     'iconName' => 'home',
-    'size' => 'w-6 h-6',
+    'size' => 'w-4 h-4',
     'class' => '',
 ])
 

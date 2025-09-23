@@ -7,6 +7,7 @@
     'disabled' => false,
     'href' => null,
     'target' => null,
+    'fullWidth' => null
 ])
 
 @php
@@ -35,6 +36,7 @@
         'focus:outline-none focus:ring-2 focus:ring-offset-2',
         'text-center no-underline', // Added for links
         $disabled ? 'opacity-50 cursor-not-allowed pointer-events-none' : '',
+        $fullWidth ? 'w-full' : '',
         $sizes[$size] ?? $sizes['md'],
         $roundedClasses[$rounded] ?? $roundedClasses['lg'],
     ])->filter()->implode(' ');
@@ -79,6 +81,16 @@
             'warning' => 'bg-yellow-100 text-yellow-900 border-transparent hover:bg-yellow-200 focus:ring-yellow-500',
             'info' => 'bg-cyan-100 text-cyan-900 border-transparent hover:bg-cyan-200 focus:ring-cyan-500',
             default => 'bg-blue-100 text-blue-900 border-transparent hover:bg-blue-200 focus:ring-blue-500',
+        },
+
+        'white' => match($color) {
+            'primary' => 'bg-white text-blue-600 border-gray-200 shadow-2xs hover:bg-gray-50 focus:bg-gray-50 focus:outline-hidden disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-800 dark:border-neutral-700 dark:text-blue-500 dark:hover:bg-neutral-700 dark:focus:bg-neutral-700',
+            'secondary' => 'bg-white text-gray-500 border-gray-200 shadow-2xs hover:bg-gray-50 focus:bg-gray-50 focus:outline-hidden disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-400 dark:hover:bg-neutral-700 dark:focus:bg-neutral-700',
+            'success' => 'bg-white text-teal-500 border-gray-200 shadow-2xs hover:bg-gray-50 focus:bg-gray-50 focus:outline-hidden disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-800 dark:border-neutral-700 dark:text-teal-500 dark:hover:bg-neutral-700 dark:focus:bg-neutral-700',
+            'danger' => 'bg-white text-red-500 border-gray-200 shadow-2xs hover:bg-gray-50 focus:bg-gray-50 focus:outline-hidden disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-800 dark:border-neutral-700 dark:text-red-500 dark:hover:bg-neutral-700 dark:focus:bg-neutral-700',
+            'warning' => 'bg-white text-yellow-500 border-gray-200 shadow-2xs hover:bg-gray-50 focus:bg-gray-50 focus:outline-hidden disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-800 dark:border-neutral-700 dark:text-yellow-500 dark:hover:bg-neutral-700 dark:focus:bg-neutral-700',
+            'info' => 'bg-white text-cyan-500 border-gray-200 shadow-2xs hover:bg-gray-50 focus:bg-gray-50 focus:outline-hidden disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-800 dark:border-neutral-700 dark:text-cyan-500 dark:hover:bg-neutral-700 dark:focus:bg-neutral-700',
+            default => 'bg-white text-blue-600 border-gray-200 shadow-2xs hover:bg-gray-50 focus:bg-gray-50 focus:outline-hidden disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-800 dark:border-neutral-700 dark:text-blue-500 dark:hover:bg-neutral-700 dark:focus:bg-neutral-700',
         },
 
         default => 'bg-blue-600 text-white border-blue-600 hover:bg-blue-700 focus:ring-blue-500',

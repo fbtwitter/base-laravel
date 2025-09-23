@@ -32,65 +32,56 @@ new class extends Component {
 
         $this->reset('email');
 
-        Flux::toast(__($status), variant: 'success');
+        session()->flash('status', __($status));
     }
 }; ?>
 
 <x-layouts.guest>
-    <div class="mb-4 text-sm text-gray-600 dark:text-gray-400">
-        {{ __('Forgot your password? No problem. Just let us know your email address and we will email you a password reset link that will allow you to choose a new one.') }}
-    </div>
-
-    <!-- Session Status -->
-{{--    <x-auth-session-status class="mb-4" :status="session('status')" />--}}
-
-    <form method="POST" action="{{ route('password.email') }}">
-        @csrf
-
-        <!-- Email Address -->
-        <div>
-{{--            <x-input-label for="email" :value="__('Email')" />--}}
-{{--            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus />--}}
-{{--            <x-input-error :messages="$errors->get('email')" class="mt-2" />--}}
-        </div>
-
-        <div class="flex items-center justify-end mt-4">
-{{--            <x-primary-button>--}}
-                {{ __('Email Password Reset Link') }}
-{{--            </x-primary-button>--}}
-        </div>
-    </form>
-    {{--
-        <flux:card>
+    <div class="max-w-md mx-auto bg-white p-6 rounded-lg shadow-md">
         @volt('pages.auth.forgot-password')
         <form wire:submit="sendPasswordResetLink" class="space-y-6">
-        <div>
-        <flux:heading size="lg">Reset your password</flux:heading>
-        <flux:subheading>Enter your email to receive a password reset link</flux:subheading>
-        </div>
+            <div>
+                <h1 class="text-2xl font-bold text-gray-900">Reset your password</h1>
+                <p class="mt-1 text-sm text-gray-600">Enter your email to receive a password reset link</p>
+            </div>
 
-        <div class="space-y-6">
-        <flux:input
-        wire:model="email"
-        label="Email"
-        type="email"
-        placeholder="Your email address"
-        required
-        autofocus
-        />
-        </div>
+            <div class="space-y-6">
+                <!-- Email Input -->
+                <x-elements.form-field.input
+                    label="Email"
+                    type="email"
+                    placeholder="Your email address"
+                    model="email"
+                    error-key="email"
+                    :required="true"
+                    autofocus
+                />
+            </div>
 
-        <div class="space-y-2">
-        <flux:button variant="primary" class="w-full" type="submit">
-        {{ __('Email Password Reset Link') }}
-        </flux:button>
+            @if (session('status'))
+                <div class="text-green-600 text-sm">{{ session('status') }}</div>
+            @endif
 
-        <flux:button variant="ghost" class="w-full" href="{{ route('login') }}" wire:navigate>
-        Back to login
-        </flux:button>
-        </div>
+            <div class="space-y-2">
+                <x-base.button
+                    type="submit"
+                    color="primary"
+                    full-width="true"
+                >
+                    Email Password Reset Link
+                </x-base.button>
+
+                <x-elements.icon-button
+                    href="{{ route('login') }}"
+                    wire:navigate
+                    color="secondary"
+                    variant="white"
+                    class="w-full"
+                >
+                    Back to login
+                </x-elements.icon-button>
+            </div>
         </form>
         @endvolt
-        </flux:card>
-    --}}
+    </div>
 </x-layouts.guest>

@@ -1,234 +1,306 @@
- <?php
+<?php
 
- use App\Models\User;
- use App\Livewire\Actions\Logout;
- use Illuminate\Support\Facades\Auth;
- use Illuminate\Support\Facades\Hash;
- use Illuminate\Validation\Rule;
- use Illuminate\Validation\Rules\Password;
- use Illuminate\Validation\ValidationException;
- use Livewire\Volt\Component;
+use App\Models\User;
+use App\Livewire\Actions\Logout;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Password;
+use Illuminate\Validation\ValidationException;
+use Livewire\Volt\Component;
 
- use function Laravel\Folio\{middleware, name};
+use function Laravel\Folio\{middleware, name};
 
- middleware(['auth']);
+middleware(['auth']);
 
- name('profile.update');
+name('profile.update');
 
- new class extends Component {
- public string $name = '';
- public string $email = '';
+new class extends Component {
+    public string $name = '';
+    public string $email = '';
 
- // Update Password Properties
- public string $current_password = '';
- public string $password = '';
- public string $password_confirmation = '';
+    // Update Password Properties
+    public string $current_password = '';
+    public string $password = '';
+    public string $password_confirmation = '';
 
- // Delete User Property
- public string $delete_password = '';
+    // Delete User Property
+    public string $delete_password = '';
 
- public function mount(): void
- {
- $this->name = Auth::user()->name;
- $this->email = Auth::user()->email;
- }
+    public bool $showDeleteModal = false;
 
- public function updateProfileInformation(): void
- {
- $user = Auth::user();
+    public function mount(): void
+    {
+        $this->name = Auth::user()->name;
+        $this->email = Auth::user()->email;
+    }
 
- $validated = $this->validate([
- 'name' => ['required', 'string', 'max:255'],
- 'email' => [
- 'required',
- 'string',
- 'lowercase',
- 'email',
- 'max:255',
- Rule::unique(User::class)->ignore($user->id),
- ],
- ]);
+    public function updateProfileInformation(): void
+    {
+        $user = Auth::user();
 
- $user->fill($validated);
+        $validated = $this->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => [
+                'required',
+                'string',
+                'lowercase',
+                'email',
+                'max:255',
+                Rule::unique(User::class)->ignore($user->id),
+            ],
+        ]);
 
- if ($user->isDirty('email')) {
- $user->email_verified_at = null;
- }
+        $user->fill($validated);
 
- $user->save();
+        if ($user->isDirty('email')) {
+            $user->email_verified_at = null;
+        }
 
- //        Flux::toast('Profile updated successfully.', variant: 'success');
- }
+        $user->save();
 
- public function sendVerification(): void
- {
- $user = Auth::user();
+        session()->flash('status', 'Profile updated successfully.');
+    }
 
- if ($user->hasVerifiedEmail()) {
- $this->redirectIntended(default: route('dashboard', absolute: false));
- return;
- }
+    public function sendVerification(): void
+    {
+        $user = Auth::user();
 
- $user->sendEmailVerificationNotification();
+        if ($user->hasVerifiedEmail()) {
+            $this->redirectIntended(default: route('dashboard', absolute: false));
+            return;
+        }
 
- //        Flux::toast('Verification link sent!', variant: 'success');
- }
+        $user->sendEmailVerificationNotification();
 
- public function updatePassword(): void
- {
- try {
- $validated = $this->validate([
- 'current_password' => ['required', 'string', 'current_password'],
- 'password' => ['required', 'string', Password::defaults(), 'confirmed'],
- ]);
- } catch (ValidationException $e) {
- $this->reset('current_password', 'password', 'password_confirmation');
- throw $e;
- }
+        session()->flash('status', 'Verification link sent!');
+    }
 
- Auth::user()->update([
- 'password' => Hash::make($validated['password']),
- ]);
+    public function updatePassword(): void
+    {
+        try {
+            $validated = $this->validate([
+                'current_password' => ['required', 'string', 'current_password'],
+                'password' => ['required', 'string', Password::defaults(), 'confirmed'],
+            ]);
+        } catch (ValidationException $e) {
+            $this->reset('current_password', 'password', 'password_confirmation');
+            throw $e;
+        }
 
- $this->reset('current_password', 'password', 'password_confirmation');
+        Auth::user()->update([
+            'password' => Hash::make($validated['password']),
+        ]);
 
- //        Flux::toast('Password updated successfully.', variant: 'success');
- }
+        $this->reset('current_password', 'password', 'password_confirmation');
 
- public function deleteUser(Logout $logout): void
- {
- $this->validate([
- 'delete_password' => ['required', 'string', 'current_password'],
- ]);
+        session()->flash('status', 'Password updated successfully.');
+    }
 
- tap(Auth::user(), $logout(...))->delete();
+    public function deleteUser(Logout $logout): void
+    {
+        $this->validate([
+            'delete_password' => ['required', 'string', 'current_password'],
+        ]);
 
- //        Flux::toast('Account deleted successfully.', variant: 'success');
+        tap(Auth::user(), $logout(...))->delete();
 
- $this->redirect('/', navigate: true);
- }
- }; ?>
+        session()->flash('status', 'Account deleted successfully.');
 
- <x-layouts.app>
- @volt('pages.profile.update')
- <div class="space-y-6">
+        $this->redirect('/', navigate: true);
+    }
+}; ?>
 
- <flux:card>
- <form wire:submit="updateProfileInformation" class="space-y-6">
- <div>
- <flux:heading size="lg">Profile Information</flux:heading>
- <flux:subheading>Update your account's profile information and email address.</flux:subheading>
- </div>
+<x-layouts.app>
+    @if (session('status'))
+        <div class="mb-4 p-4 bg-green-100 border border-green-400 text-green-700 rounded-md text-sm">
+            {{ session('status') }}
+        </div>
+    @endif
 
- <div class="space-y-6">
- <flux:input
- wire:model="name"
- label="Name"
- type="text"
- placeholder="Your name"
- required
- autofocus
- />
+    @volt('pages.profile.update')
+    <div class="space-y-6">
+        <div class="bg-white p-6 rounded-lg shadow-md">
+            <form wire:submit="updateProfileInformation" class="space-y-6">
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-900">Profile Information</h2>
+                    <p class="mt-1 text-sm text-gray-600">Update your account's profile information and email
+                        address.</p>
+                </div>
 
- <flux:input
- wire:model="email"
- label="Email"
- type="email"
- placeholder="Your email address"
- required
- />
+                <div class="space-y-6">
+                    <div>
+                        <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
+                        <input
+                            wire:model="name"
+                            type="text"
+                            id="name"
+                            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                            placeholder="Your name"
+                            required
+                            autofocus
+                        />
+                        @error('name') <span class="text-red-600 text-sm mt-1">{{ $message }}</span> @enderror
+                    </div>
 
- @if (auth()->user() instanceof \Illuminate\Contracts\Auth\MustVerifyEmail &&! auth()->user()->hasVerifiedEmail())
- <div>
- <p class="text-sm text-gray-800">
- Your email address is unverified.
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                        <input
+                            wire:model="email"
+                            type="email"
+                            id="email"
+                            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                            placeholder="Your email address"
+                            required
+                        />
+                        @error('email') <span class="text-red-600 text-sm mt-1">{{ $message }}</span> @enderror
+                    </div>
 
- <flux:button wire:click.prevent="sendVerification" variant="link">
- Click here to re-send the verification email.
- </flux:button>
- </p>
- </div>
- @endif
- </div>
+                    @if (auth()->user() instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && ! auth()->user()->hasVerifiedEmail())
+                        <div class="mt-2 text-sm text-gray-800">
+                            Your email address is unverified.
+                            <button wire:click.prevent="sendVerification"
+                                    class="ml-1 text-indigo-600 hover:text-indigo-500 underline font-medium">
+                                Click here to re-send the verification email.
+                            </button>
+                        </div>
+                    @endif
+                </div>
 
- <div class="flex items-center justify-end gap-4">
- <flux:button type="submit" variant="primary">Save</flux:button>
- </div>
- </form>
- </flux:card>
+                <div class="flex items-center justify-end gap-4">
+                    <button
+                        type="submit"
+                        class="inline-flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                    >
+                        Save
+                    </button>
+                </div>
+            </form>
+        </div>
 
- <flux:card>
- <form wire:submit="updatePassword" class="space-y-6">
- <div>
- <flux:heading size="lg">Update Password</flux:heading>
- <flux:subheading>
- Ensure your account is using a long, random password to stay secure.
- </flux:subheading>
- </div>
+        <div class="bg-white p-6 rounded-lg shadow-md">
+            <form wire:submit="updatePassword" class="space-y-6">
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-900">Update Password</h2>
+                    <p class="mt-1 text-sm text-gray-600">Ensure your account is using a long, random password to stay
+                        secure.</p>
+                </div>
 
- <div class="space-y-6">
- <flux:input wire:model="current_password" label="Current Password" type="password" required />
- <flux:input wire:model="password" label="New Password" type="password" required />
- <flux:input
- wire:model="password_confirmation"
- label="Confirm Password"
- type="password"
- required
- />
- </div>
+                <div class="space-y-6">
+                    <div>
+                        <label for="current_password" class="block text-sm font-medium text-gray-700">Current
+                            Password</label>
+                        <input
+                            wire:model="current_password"
+                            type="password"
+                            id="current_password"
+                            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                            required
+                        />
+                        @error('current_password') <span
+                            class="text-red-600 text-sm mt-1">{{ $message }}</span> @enderror
+                    </div>
+                    <div>
+                        <label for="password" class="block text-sm font-medium text-gray-700">New Password</label>
+                        <input
+                            wire:model="password"
+                            type="password"
+                            id="password"
+                            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                            required
+                        />
+                        @error('password') <span class="text-red-600 text-sm mt-1">{{ $message }}</span> @enderror
+                    </div>
+                    <div>
+                        <label for="password_confirmation" class="block text-sm font-medium text-gray-700">Confirm
+                            Password</label>
+                        <input
+                            wire:model="password_confirmation"
+                            type="password"
+                            id="password_confirmation"
+                            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                            required
+                        />
+                        @error('password_confirmation') <span
+                            class="text-red-600 text-sm mt-1">{{ $message }}</span> @enderror
+                    </div>
+                </div>
 
- <div class="flex items-center justify-end gap-4">
- <flux:button type="submit" variant="primary">Update Password</flux:button>
- </div>
- </form>
- </flux:card>
- <flux:card>
- <div class="space-y-6">
- <div>
- <flux:heading size="lg">Delete Account</flux:heading>
- <flux:subheading>
- Once your account is deleted, all of its resources and data will be permanently deleted.
- </flux:subheading>
- </div>
+                <div class="flex items-center justify-end gap-4">
+                    <button
+                        type="submit"
+                        class="inline-flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                    >
+                        Update Password
+                    </button>
+                </div>
+            </form>
+        </div>
 
- <flux:modal.trigger name="delete-profile">
- <flux:button variant="danger" class="mt-4">Delete Account</flux:button>
- </flux:modal.trigger>
+        <div class="bg-white p-6 rounded-lg shadow-md">
+            <div class="space-y-6">
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-900">Delete Account</h2>
+                    <p class="mt-1 text-sm text-gray-600">Once your account is deleted, all of its resources and data
+                        will be permanently deleted.</p>
+                </div>
 
- <flux:modal name="delete-profile" class="min-w-[22rem] space-y-6">
- <form wire:submit="deleteUser">
- <div>
- <flux:heading size="lg">Are you sure you want to delete your account?</flux:heading>
+                <button
+                    wire:click="$set('showDeleteModal', true)"
+                    class="inline-flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                >
+                    Delete Account
+                </button>
 
- <flux:subheading>
- Once your account is deleted, all of its resources and data will be permanently
- deleted.
- </flux:subheading>
- </div>
+                @if($showDeleteModal)
+                    <div class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+                        <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+                            <form wire:submit="deleteUser">
+                                <div>
+                                    <h3 class="text-lg font-medium text-gray-900">Are you sure you want to delete your
+                                        account?</h3>
+                                    <p class="mt-1 text-sm text-gray-600">
+                                        Once your account is deleted, all of its resources and data will be permanently
+                                        deleted.
+                                    </p>
+                                </div>
 
- <div class="mt-6">
- <flux:input
- wire:model="delete_password"
- label="Password"
- type="password"
- placeholder="Password"
- required
- />
- </div>
+                                <div class="mt-6">
+                                    <label for="delete_password" class="block text-sm font-medium text-gray-700">Password</label>
+                                    <input
+                                        wire:model="delete_password"
+                                        type="password"
+                                        id="delete_password"
+                                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                        placeholder="Password"
+                                        required
+                                    />
+                                    @error('delete_password') <span
+                                        class="text-red-600 text-sm mt-1">{{ $message }}</span> @enderror
+                                </div>
 
- <div class="mt-6 flex gap-2">
- <flux:spacer />
+                                <div class="mt-6 flex justify-end gap-2">
+                                    <button
+                                        wire:click="$set('showDeleteModal', false)"
+                                        type="button"
+                                        class="py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                                    >
+                                        Cancel
+                                    </button>
 
- <flux:modal.close>
- <flux:button variant="ghost">Cancel</flux:button>
- </flux:modal.close>
-
- <flux:button type="submit" variant="danger">Delete Account</flux:button>
- </div>
- </form>
- </flux:modal>
- </div>
- </flux:card>
- </div>
- @endvolt
- </x-layouts.app>
+                                    <button
+                                        type="submit"
+                                        class="py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                                    >
+                                        Delete Account
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                @endif
+            </div>
+        </div>
+    </div>
+    @endvolt
+</x-layouts.app>
