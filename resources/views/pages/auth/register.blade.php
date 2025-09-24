@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Livewire\Volt\Component;
 
-middleware(["guest"]);
 name('register');
 
 new class extends Component {
@@ -40,8 +39,8 @@ new class extends Component {
 };
 ?>
 
-<x-layouts.guest>
-    <div class="max-w-md mx-auto bg-white p-4 rounded-lg shadow-md">
+<x-layouts.template.guest>
+    <div class="mx-auto max-w-md rounded-lg bg-white p-4 shadow-md">
         @volt('pages.auth.register')
         <div class="flex min-h-full flex-1 flex-col justify-center py-4 lg:px-8">
             <div class="sm:mx-auto sm:w-full sm:max-w-sm">
@@ -97,35 +96,36 @@ new class extends Component {
                                 class="w-full justify-center"
                                 wire:loading.attr="disabled"
                         >
-                        <span wire:loading.remove>
-                           Create Account
-                        </span>
+                            <span wire:loading.remove>Create Account</span>
                             <span wire:loading>
-                           <div class="flex gap-1 items-center">
-                                <x-base.icon icon-name="loader-circle" stroke-width="2.75" class="animate-spin
-                                inline-block w-5 h-5" role="status" aria-label="loading" />
-                            Creating Account...
-                           </div>
-                        </span>
+                                    <div class="flex items-center gap-1">
+                                        <x-base.icon
+                                                icon-name="loader-circle"
+                                                stroke-width="2.75"
+                                                class="inline-block h-5 w-5 animate-spin"
+                                                role="status"
+                                                aria-label="loading"
+                                        />
+                                        Creating Account...
+                                    </div>
+                                </span>
                         </x-elements.icon-button>
 
                         <!-- Login Link -->
                         <div class="text-center">
                             <x-elements.icon-button
                                     href="{{ route('login') }}"
-                                variant="ghost"
-                                color="secondary"
-                                wire:navigate
-                            >
-                                Already have an account
-                            </x-elements.icon-button>
+                                    variant="ghost"
+                                    color="secondary"
+                                    wire:navigate
+                                >
+                                    Already have an account
+                                </x-elements.icon-button>
+                            </div>
                         </div>
-                    </div>
-
-
-                </form>
+                    </form>
+                </div>
             </div>
-        </div>
         @endvolt
     </div>
-</x-layouts.guest>
+</x-layouts.template.guest>

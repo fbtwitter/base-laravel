@@ -1,4 +1,4 @@
-<x-layouts.base>
+<x-layouts.template>
     <div class="flex min-h-screen items-center justify-center bg-gray-100">
         <div class="text-center">
             <h1 class="text-6xl font-bold text-red-600">404</h1>
@@ -8,4 +8,4 @@
             </a>
         </div>
     </div>
-</x-layouts.base>
+</x-layouts.template>

@@ -13,13 +13,13 @@
 
 @php
     // Generate ID if not provided
-    $id = $id ?? \Illuminate\Support\Str::slug($label, '_');
+    $id ??= \Illuminate\Support\Str::slug($label, '_');
 
     // Use provided model or generate from label
-    $model = $model ?? 'form.' . \Illuminate\Support\Str::lower($id);
+    $model ??= 'form.' . \Illuminate\Support\Str::lower($id);
 
     // Use provided name or generate from ID
-    $name = $name ?? $id;
+    $name ??= $id;
 @endphp
 
 <div class="{{ $class }} flex">
@@ -32,11 +32,7 @@
         :name="$name"
     />
 
-    {{--    <label for="hs-default-checkbox" class="text-sm text-gray-500 ms-3 dark:text-neutral-400">Remember Me</label>--}}
-    <x-base.typographies.label
-        for="{{ $id }}"
-        class="ms-3  !text-gray-500 dark:!text-neutral-400 {{ $labelClass }}"
-    >
+    <x-base.typographies.label for="{{ $id }}" class="ms-3  !text-gray-500 dark:!text-neutral-400 {{ $labelClass }}">
         {{ $label }}
     </x-base.typographies.label>
 </div>

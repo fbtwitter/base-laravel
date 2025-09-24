@@ -111,196 +111,215 @@ new class extends Component {
     }
 }; ?>
 
-<x-layouts.app>
+<x-layouts.template.app>
     @if (session('status'))
-        <div class="mb-4 p-4 bg-green-100 border border-green-400 text-green-700 rounded-md text-sm">
+        <div class="mb-4 rounded-md border border-green-400 bg-green-100 p-4 text-sm text-green-700">
             {{ session('status') }}
         </div>
     @endif
 
     @volt('pages.profile.update')
-    <div class="space-y-6">
-        <div class="bg-white p-6 rounded-lg shadow-md">
-            <form wire:submit="updateProfileInformation" class="space-y-6">
-                <div>
-                    <h2 class="text-2xl font-bold text-gray-900">Profile Information</h2>
-                    <p class="mt-1 text-sm text-gray-600">Update your account's profile information and email
-                        address.</p>
-                </div>
+        <div class="space-y-6">
+            <div class="rounded-lg bg-white p-6 shadow-md">
+                <form wire:submit="updateProfileInformation" class="space-y-6">
+                    <div>
+                        <h2 class="text-2xl font-bold text-gray-900">Profile Information</h2>
+                        <p class="mt-1 text-sm text-gray-600">
+                            Update your account's profile information and email address.
+                        </p>
+                    </div>
 
+                    <div class="space-y-6">
+                        <div>
+                            <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
+                            <input
+                                wire:model="name"
+                                type="text"
+                                id="name"
+                                class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 focus:outline-none sm:text-sm"
+                                placeholder="Your name"
+                                required
+                                autofocus
+                            />
+                            @error('name')
+                                <span class="mt-1 text-sm text-red-600">{{ $message }}</span>
+                            @enderror
+                        </div>
+
+                        <div>
+                            <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                            <input
+                                wire:model="email"
+                                type="email"
+                                id="email"
+                                class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 focus:outline-none sm:text-sm"
+                                placeholder="Your email address"
+                                required
+                            />
+                            @error('email')
+                                <span class="mt-1 text-sm text-red-600">{{ $message }}</span>
+                            @enderror
+                        </div>
+
+                        @if (auth()->user() instanceof \Illuminate\Contracts\Auth\MustVerifyEmail &&! auth()->user()->hasVerifiedEmail())
+                            <div class="mt-2 text-sm text-gray-800">
+                                Your email address is unverified.
+                                <button
+                                    wire:click.prevent="sendVerification"
+                                    class="ml-1 font-medium text-indigo-600 underline hover:text-indigo-500"
+                                >
+                                    Click here to re-send the verification email.
+                                </button>
+                            </div>
+                        @endif
+                    </div>
+
+                    <div class="flex items-center justify-end gap-4">
+                        <button
+                            type="submit"
+                            class="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:outline-none"
+                        >
+                            Save
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="rounded-lg bg-white p-6 shadow-md">
+                <form wire:submit="updatePassword" class="space-y-6">
+                    <div>
+                        <h2 class="text-2xl font-bold text-gray-900">Update Password</h2>
+                        <p class="mt-1 text-sm text-gray-600">
+                            Ensure your account is using a long, random password to stay secure.
+                        </p>
+                    </div>
+
+                    <div class="space-y-6">
+                        <div>
+                            <label for="current_password" class="block text-sm font-medium text-gray-700">
+                                Current Password
+                            </label>
+                            <input
+                                wire:model="current_password"
+                                type="password"
+                                id="current_password"
+                                class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 focus:outline-none sm:text-sm"
+                                required
+                            />
+                            @error('current_password')
+                                <span class="mt-1 text-sm text-red-600">{{ $message }}</span>
+                            @enderror
+                        </div>
+                        <div>
+                            <label for="password" class="block text-sm font-medium text-gray-700">New Password</label>
+                            <input
+                                wire:model="password"
+                                type="password"
+                                id="password"
+                                class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 focus:outline-none sm:text-sm"
+                                required
+                            />
+                            @error('password')
+                                <span class="mt-1 text-sm text-red-600">{{ $message }}</span>
+                            @enderror
+                        </div>
+                        <div>
+                            <label for="password_confirmation" class="block text-sm font-medium text-gray-700">
+                                Confirm Password
+                            </label>
+                            <input
+                                wire:model="password_confirmation"
+                                type="password"
+                                id="password_confirmation"
+                                class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 focus:outline-none sm:text-sm"
+                                required
+                            />
+                            @error('password_confirmation')
+                                <span class="mt-1 text-sm text-red-600">{{ $message }}</span>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-end gap-4">
+                        <button
+                            type="submit"
+                            class="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:outline-none"
+                        >
+                            Update Password
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="rounded-lg bg-white p-6 shadow-md">
                 <div class="space-y-6">
                     <div>
-                        <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
-                        <input
-                            wire:model="name"
-                            type="text"
-                            id="name"
-                            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                            placeholder="Your name"
-                            required
-                            autofocus
-                        />
-                        @error('name') <span class="text-red-600 text-sm mt-1">{{ $message }}</span> @enderror
+                        <h2 class="text-2xl font-bold text-gray-900">Delete Account</h2>
+                        <p class="mt-1 text-sm text-gray-600">
+                            Once your account is deleted, all of its resources and data will be permanently deleted.
+                        </p>
                     </div>
 
-                    <div>
-                        <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
-                        <input
-                            wire:model="email"
-                            type="email"
-                            id="email"
-                            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                            placeholder="Your email address"
-                            required
-                        />
-                        @error('email') <span class="text-red-600 text-sm mt-1">{{ $message }}</span> @enderror
-                    </div>
+                    <button
+                        wire:click="$set('showDeleteModal', true)"
+                        class="inline-flex justify-center rounded-md border border-transparent bg-red-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-red-700 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:outline-none"
+                    >
+                        Delete Account
+                    </button>
 
-                    @if (auth()->user() instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && ! auth()->user()->hasVerifiedEmail())
-                        <div class="mt-2 text-sm text-gray-800">
-                            Your email address is unverified.
-                            <button wire:click.prevent="sendVerification"
-                                    class="ml-1 text-indigo-600 hover:text-indigo-500 underline font-medium">
-                                Click here to re-send the verification email.
-                            </button>
+                    @if ($showDeleteModal)
+                        <div class="bg-opacity-50 fixed inset-0 z-50 h-full w-full overflow-y-auto bg-gray-600">
+                            <div class="relative top-20 mx-auto w-96 rounded-md border bg-white p-5 shadow-lg">
+                                <form wire:submit="deleteUser">
+                                    <div>
+                                        <h3 class="text-lg font-medium text-gray-900">
+                                            Are you sure you want to delete your account?
+                                        </h3>
+                                        <p class="mt-1 text-sm text-gray-600">
+                                            Once your account is deleted, all of its resources and data will be
+                                            permanently deleted.
+                                        </p>
+                                    </div>
+
+                                    <div class="mt-6">
+                                        <label for="delete_password" class="block text-sm font-medium text-gray-700">
+                                            Password
+                                        </label>
+                                        <input
+                                            wire:model="delete_password"
+                                            type="password"
+                                            id="delete_password"
+                                            class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 focus:outline-none sm:text-sm"
+                                            placeholder="Password"
+                                            required
+                                        />
+                                        @error('delete_password')
+                                            <span class="mt-1 text-sm text-red-600">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+
+                                    <div class="mt-6 flex justify-end gap-2">
+                                        <button
+                                            wire:click="$set('showDeleteModal', false)"
+                                            type="button"
+                                            class="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:outline-none"
+                                        >
+                                            Cancel
+                                        </button>
+
+                                        <button
+                                            type="submit"
+                                            class="rounded-md border border-transparent bg-red-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-red-700 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:outline-none"
+                                        >
+                                            Delete Account
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
                         </div>
                     @endif
                 </div>
-
-                <div class="flex items-center justify-end gap-4">
-                    <button
-                        type="submit"
-                        class="inline-flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                    >
-                        Save
-                    </button>
-                </div>
-            </form>
-        </div>
-
-        <div class="bg-white p-6 rounded-lg shadow-md">
-            <form wire:submit="updatePassword" class="space-y-6">
-                <div>
-                    <h2 class="text-2xl font-bold text-gray-900">Update Password</h2>
-                    <p class="mt-1 text-sm text-gray-600">Ensure your account is using a long, random password to stay
-                        secure.</p>
-                </div>
-
-                <div class="space-y-6">
-                    <div>
-                        <label for="current_password" class="block text-sm font-medium text-gray-700">Current
-                            Password</label>
-                        <input
-                            wire:model="current_password"
-                            type="password"
-                            id="current_password"
-                            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                            required
-                        />
-                        @error('current_password') <span
-                            class="text-red-600 text-sm mt-1">{{ $message }}</span> @enderror
-                    </div>
-                    <div>
-                        <label for="password" class="block text-sm font-medium text-gray-700">New Password</label>
-                        <input
-                            wire:model="password"
-                            type="password"
-                            id="password"
-                            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                            required
-                        />
-                        @error('password') <span class="text-red-600 text-sm mt-1">{{ $message }}</span> @enderror
-                    </div>
-                    <div>
-                        <label for="password_confirmation" class="block text-sm font-medium text-gray-700">Confirm
-                            Password</label>
-                        <input
-                            wire:model="password_confirmation"
-                            type="password"
-                            id="password_confirmation"
-                            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                            required
-                        />
-                        @error('password_confirmation') <span
-                            class="text-red-600 text-sm mt-1">{{ $message }}</span> @enderror
-                    </div>
-                </div>
-
-                <div class="flex items-center justify-end gap-4">
-                    <button
-                        type="submit"
-                        class="inline-flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                    >
-                        Update Password
-                    </button>
-                </div>
-            </form>
-        </div>
-
-        <div class="bg-white p-6 rounded-lg shadow-md">
-            <div class="space-y-6">
-                <div>
-                    <h2 class="text-2xl font-bold text-gray-900">Delete Account</h2>
-                    <p class="mt-1 text-sm text-gray-600">Once your account is deleted, all of its resources and data
-                        will be permanently deleted.</p>
-                </div>
-
-                <button
-                    wire:click="$set('showDeleteModal', true)"
-                    class="inline-flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-                >
-                    Delete Account
-                </button>
-
-                @if($showDeleteModal)
-                    <div class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
-                        <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
-                            <form wire:submit="deleteUser">
-                                <div>
-                                    <h3 class="text-lg font-medium text-gray-900">Are you sure you want to delete your
-                                        account?</h3>
-                                    <p class="mt-1 text-sm text-gray-600">
-                                        Once your account is deleted, all of its resources and data will be permanently
-                                        deleted.
-                                    </p>
-                                </div>
-
-                                <div class="mt-6">
-                                    <label for="delete_password" class="block text-sm font-medium text-gray-700">Password</label>
-                                    <input
-                                        wire:model="delete_password"
-                                        type="password"
-                                        id="delete_password"
-                                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                                        placeholder="Password"
-                                        required
-                                    />
-                                    @error('delete_password') <span
-                                        class="text-red-600 text-sm mt-1">{{ $message }}</span> @enderror
-                                </div>
-
-                                <div class="mt-6 flex justify-end gap-2">
-                                    <button
-                                        wire:click="$set('showDeleteModal', false)"
-                                        type="button"
-                                        class="py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                                    >
-                                        Cancel
-                                    </button>
-
-                                    <button
-                                        type="submit"
-                                        class="py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-                                    >
-                                        Delete Account
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                @endif
             </div>
         </div>
-    </div>
     @endvolt
-</x-layouts.app>
+</x-layouts.template.app>

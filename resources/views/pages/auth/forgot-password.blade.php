@@ -36,52 +36,48 @@ new class extends Component {
     }
 }; ?>
 
-<x-layouts.guest>
-    <div class="max-w-md mx-auto bg-white p-6 rounded-lg shadow-md">
+<x-layouts.template.guest>
+    <div class="mx-auto max-w-md rounded-lg bg-white p-6 shadow-md">
         @volt('pages.auth.forgot-password')
-        <form wire:submit="sendPasswordResetLink" class="space-y-6">
-            <div>
-                <h1 class="text-2xl font-bold text-gray-900">Reset your password</h1>
-                <p class="mt-1 text-sm text-gray-600">Enter your email to receive a password reset link</p>
-            </div>
+            <form wire:submit="sendPasswordResetLink" class="space-y-6">
+                <div>
+                    <h1 class="text-2xl font-bold text-gray-900">Reset your password</h1>
+                    <p class="mt-1 text-sm text-gray-600">Enter your email to receive a password reset link</p>
+                </div>
 
-            <div class="space-y-6">
-                <!-- Email Input -->
-                <x-elements.form-field.input
-                    label="Email"
-                    type="email"
-                    placeholder="Your email address"
-                    model="email"
-                    error-key="email"
-                    :required="true"
-                    autofocus
-                />
-            </div>
+                <div class="space-y-6">
+                    <!-- Email Input -->
+                    <x-elements.form-field.input
+                        label="Email"
+                        type="email"
+                        placeholder="Your email address"
+                        model="email"
+                        error-key="email"
+                        :required="true"
+                        autofocus
+                    />
+                </div>
 
-            @if (session('status'))
-                <div class="text-green-600 text-sm">{{ session('status') }}</div>
-            @endif
+                @if (session('status'))
+                    <div class="text-sm text-green-600">{{ session('status') }}</div>
+                @endif
 
-            <div class="space-y-2">
-                <x-base.button
-                    type="submit"
-                    color="primary"
-                    full-width="true"
-                >
-                    Email Password Reset Link
-                </x-base.button>
+                <div class="space-y-2">
+                    <x-base.button type="submit" color="primary" full-width="true">
+                        Email Password Reset Link
+                    </x-base.button>
 
-                <x-elements.icon-button
-                    href="{{ route('login') }}"
-                    wire:navigate
-                    color="secondary"
-                    variant="white"
-                    class="w-full"
-                >
-                    Back to login
-                </x-elements.icon-button>
-            </div>
-        </form>
+                    <x-elements.icon-button
+                        href="{{ route('login') }}"
+                        wire:navigate
+                        color="secondary"
+                        variant="white"
+                        class="w-full"
+                    >
+                        Back to login
+                    </x-elements.icon-button>
+                </div>
+            </form>
         @endvolt
     </div>
-</x-layouts.guest>
+</x-layouts.template.guest>

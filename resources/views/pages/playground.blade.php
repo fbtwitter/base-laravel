@@ -7,14 +7,14 @@ middleware(['auth', 'verified']);
 name('playground');
 
 new class extends Component {
-    public function mount()
+    public function mount(): void
     {
         info('this component has been loaded');
     }
 };
 ?>
 
-<x-layouts.app>
+<x-layouts.template.app>
     @volt('pages.playground')
         <div class="container mx-auto px-4 py-8">
             <div class="card">
@@ -27,4 +27,4 @@ new class extends Component {
             </div>
         </div>
     @endvolt
-</x-layouts.app>
+</x-layouts.template.app>

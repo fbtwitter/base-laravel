@@ -1,6 +1,6 @@
 @props([
     'iconName' => 'home',
-    'size' => 'w-4 h-4',
+    'size' => 'h-4 w-4',
     'class' => '',
 ])
 
@@ -8,7 +8,9 @@
     $iconPrefix = 'lucide-' . $iconName;
 
     // Combine size and custom classes more efficiently
-    $classes = collect([$size, $class])->filter()->implode(' ');
+    $classes = collect([$size, $class])
+        ->filter()
+        ->implode(' ');
 
     // Get extra attributes (excluding our handled props)
     $extraAttributes = $attributes->except(['iconName', 'icon-name', 'size', 'class'])->getAttributes();

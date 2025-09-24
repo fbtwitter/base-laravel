@@ -9,4 +9,3 @@
     type="checkbox"
     {{ $attributes->merge(['id' => $id, 'class' => $baseClass]) }}
 />
-

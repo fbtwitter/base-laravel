@@ -1393,7 +1393,7 @@ $delete = fn(Product $product) => $product->delete();
   it('returns all', function () {
   $response = $this->postJson('/api/docs', []);
 
-                $response->assertSuccessful();
+                  $response->assertSuccessful();
 
     });
     </code-snippet>
@@ -1430,13 +1430,13 @@ it('has emails', function (string $email) {
 
 - When listing items, use gap utilities for spacing, don't use margins.
 
-              <code-snippet name="Valid Flex Gap Spacing Example" lang="html">
-                  <div class="flex gap-8">
-                      <div>Superior</div>
-                      <div>Michigan</div>
-                      <div>Erie</div>
-                  </div>
-              </code-snippet>
+                <code-snippet name="Valid Flex Gap Spacing Example" lang="html">
+                    <div class="flex gap-8">
+                        <div>Superior</div>
+                        <div>Michigan</div>
+                        <div>Erie</div>
+                    </div>
+                </code-snippet>
 
 ### Dark Mode
 

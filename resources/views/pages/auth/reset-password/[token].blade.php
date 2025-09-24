@@ -71,76 +71,84 @@ new class extends Component {
     }
 }; ?>
 
-<x-layouts.guest>
-    <div class="max-w-md mx-auto bg-white p-6 rounded-lg shadow-md">
+<x-layouts.template.guest>
+    <div class="mx-auto max-w-md rounded-lg bg-white p-6 shadow-md">
         @volt('pages.auth.reset-password')
-        <form wire:submit="resetPassword" class="space-y-6">
-            <div>
-                <h1 class="text-2xl font-bold text-gray-900">Reset your password</h1>
-                <p class="mt-1 text-sm text-gray-600">Enter your new password</p>
-            </div>
-
-            <div class="space-y-6">
+            <form wire:submit="resetPassword" class="space-y-6">
                 <div>
-                    <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
-                    <input
-                        wire:model="email"
-                        type="email"
-                        id="email"
-                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                        placeholder="Your email address"
-                        required
-                        autofocus
-                    />
-                    @error('email') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
+                    <h1 class="text-2xl font-bold text-gray-900">Reset your password</h1>
+                    <p class="mt-1 text-sm text-gray-600">Enter your new password</p>
                 </div>
-                <div>
-                    <label for="password" class="block text-sm font-medium text-gray-700">New Password</label>
-                    <input
-                        wire:model="password"
-                        type="password"
-                        id="password"
-                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                        placeholder="Your new password"
-                        required
-                    />
-                    @error('password') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
+
+                <div class="space-y-6">
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                        <input
+                            wire:model="email"
+                            type="email"
+                            id="email"
+                            class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 focus:outline-none sm:text-sm"
+                            placeholder="Your email address"
+                            required
+                            autofocus
+                        />
+                        @error('email')
+                            <span class="text-sm text-red-600">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    <div>
+                        <label for="password" class="block text-sm font-medium text-gray-700">New Password</label>
+                        <input
+                            wire:model="password"
+                            type="password"
+                            id="password"
+                            class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 focus:outline-none sm:text-sm"
+                            placeholder="Your new password"
+                            required
+                        />
+                        @error('password')
+                            <span class="text-sm text-red-600">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    <div>
+                        <label for="password_confirmation" class="block text-sm font-medium text-gray-700">
+                            Confirm Password
+                        </label>
+                        <input
+                            wire:model="password_confirmation"
+                            type="password"
+                            id="password_confirmation"
+                            class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 focus:outline-none sm:text-sm"
+                            placeholder="Confirm your new password"
+                            required
+                        />
+                        @error('password_confirmation')
+                            <span class="text-sm text-red-600">{{ $message }}</span>
+                        @enderror
+                    </div>
                 </div>
-                <div>
-                    <label for="password_confirmation" class="block text-sm font-medium text-gray-700">Confirm Password</label>
-                    <input
-                        wire:model="password_confirmation"
-                        type="password"
-                        id="password_confirmation"
-                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                        placeholder="Confirm your new password"
-                        required
-                    />
-                    @error('password_confirmation') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
+
+                @if (session('status'))
+                    <div class="text-sm text-green-600">{{ session('status') }}</div>
+                @endif
+
+                <div class="space-y-2">
+                    <button
+                        type="submit"
+                        class="flex w-full justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:outline-none"
+                    >
+                        {{ __('Reset Password') }}
+                    </button>
+
+                    <a
+                        href="{{ route('login') }}"
+                        wire:navigate
+                        class="flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:outline-none"
+                    >
+                        Back to login
+                    </a>
                 </div>
-            </div>
-
-            @if (session('status'))
-                <div class="text-green-600 text-sm">{{ session('status') }}</div>
-            @endif
-
-            <div class="space-y-2">
-                <button
-                    type="submit"
-                    class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                >
-                    {{ __('Reset Password') }}
-                </button>
-
-                <a
-                    href="{{ route('login') }}"
-                    wire:navigate
-                    class="w-full flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                >
-                    Back to login
-                </a>
-            </div>
-        </form>
+            </form>
         @endvolt
     </div>
-</x-layouts.guest>
+</x-layouts.template.guest>
